@@ -15,7 +15,20 @@ your own!
 
     var ValidatableModel = Backbone.Model.extend({
       validatesWith: [
-        new StringValidator({ attribute: 'name' })
+        new StringValidator({ attribute: 'theAnswer' })
       ]    
     });
+
+    var myModel = new ValidatableModel;
+
+    myModel.set({ theAnswer: 'Forty Two' }); // ok
+    myModel.set({ theAnswer: 42 }); // invalid!
+
+Failing validations will set error messages on the model that can be 
+used to debug over provide user feedback:
+
+    _.each(myModel.errors.theAnswer, function (message) {
+      console.log('invalid because: ' + message);    
+    });
+
 
