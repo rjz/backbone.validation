@@ -3,28 +3,34 @@ require '../src/backbone.validations.js'
 
 class MyValidator extends Backbone.Validation
   validate: (model) ->
-    model.errors.push 'failed' unless @opts.passes
+    @addError model, 'failed' unless @opts.passes
 
 describe 'Backbone.Validation', ->
 
+  beforeEach ->
+    @model = new TestModel
+
   it 'fails by default', ->
-    model = new TestModel
     validation = new Backbone.Validation
-    validation.validate model
-    expect(model.errors.length).toEqual 1
+    validation.validate @model
+    expect(@model.errors.base.length).toEqual 1
 
   it 'can be extended', ->
     Vtoo = Backbone.Validation.extend
-      validate: (model) ->
+      validate: (@model) ->
     expect(new Vtoo instanceof Backbone.Validation).toBeTruthy()
 
+  it 'can add errors to a model', ->
+    Vthree = Backbone.Validation.extend
+      validate: (model) ->
+        @addError model, 'Failed.'
+
+  it 'can add errors to model attributes', ->
+    Vfour = Backbone.Validation.extend
+      validate: (model) ->
+        @addError model, 'attribute', 'Failed.'
+
 describe 'Adjustments to Backbone.Model', ->
-  describe 'model errors', ->
-    beforeEach ->
-      @model = new TestModel
-    it 'exists as an array', ->
-      expect(@model.errors).toBeDefined()
-      expect(@model.errors instanceof Array).toEqual true
 
   describe 'default validate method', ->
     beforeEach ->
