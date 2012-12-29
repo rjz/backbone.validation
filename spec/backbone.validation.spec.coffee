@@ -17,18 +17,24 @@ describe 'Backbone.Validation', ->
 
   it 'can be extended', ->
     Vtoo = Backbone.Validation.extend
-      validate: (@model) ->
+      validate: (model) ->
     expect(new Vtoo instanceof Backbone.Validation).toBeTruthy()
 
-  it 'can add errors to a model', ->
+  it 'adds errors to model base by default', ->
     Vthree = Backbone.Validation.extend
       validate: (model) ->
         @addError model, 'Failed.'
+    validator = new Vthree
+    validator.validate @model
+    expect(@model.errors.base.length).toEqual 1
 
   it 'can add errors to model attributes', ->
     Vfour = Backbone.Validation.extend
       validate: (model) ->
         @addError model, 'attribute', 'Failed.'
+    validator = new Vfour
+    validator.validate @model
+    expect(@model.errors.attribute.length).toEqual 1
 
 describe 'Adjustments to Backbone.Model', ->
 
