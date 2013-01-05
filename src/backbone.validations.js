@@ -18,6 +18,22 @@
       model.errors = errors;
     }
 
+    Validation.prototype.isPresent = function (model, key) {
+      return model.attributes.hasOwnProperty(key);
+    }
+
+    Validation.prototype.isEqual = function (model, key, attrOther) {
+      return model.get(key) == model.get(attrOther);
+    }
+
+    Validation.prototype.isMatch = function (model, key, value) {
+      if (_.isRegExp(value)) {
+        return value.test(model.get(key));
+      }
+      return model.get(key) == value;
+    }
+
+    // Override the validate method to implement validation
     Validation.prototype.validate = function (model) {
       this.addError(model, 'Unable to validate');
     };
@@ -29,7 +45,7 @@
   Backbone.Validation.extend = Backbone.Model.extend;
 
   // Patch `Backbone.Collection.filter` method to support filters
-  Backbone.Model.prototype.validate = function(attrs, options) {
+  Backbone.Model.prototype.validate = function (attrs, options) {
     var self = this,
         validations;
 

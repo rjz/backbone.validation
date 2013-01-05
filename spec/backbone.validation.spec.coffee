@@ -36,6 +36,36 @@ describe 'Backbone.Validation', ->
     validator.validate @model
     expect(@model.errors.attribute.length).toEqual 1
 
+  describe 'Matching', ->
+
+    beforeEach ->
+      @validation = new Backbone.Validation
+
+    it 'can test for presence of an attribute', ->
+      attr = 'foo'
+      expect(@validation.isPresent @model, attr).toBeFalsy()
+      @model.set attr, 'foobar'
+      expect(@validation.isPresent @model, attr).toBeTruthy()
+
+    it 'can test for equality of two attrs', ->
+      attr = 'foo'
+      @model.set other = 'foz', val = 'foobar'
+      expect(@validation.isEqual @model, attr, other).toBeFalsy()
+      @model.set attr, val
+      expect(@validation.isPresent @model, attr, other).toBeTruthy()
+
+    it 'can test whether an attribute matches a value', ->
+      attr = 'foo'
+      expect(@validation.isMatch @model, attr, val = 'foobar').toBeFalsy()
+      @model.set attr, val
+      expect(@validation.isMatch @model, attr, val).toBeTruthy()
+
+    it 'can test whether an attribute matches a regex', ->
+      attr = 'foo'
+      @model.set attr, 'foobar'
+      expect(@validation.isMatch @model, attr, /obar/).toBeTruthy()
+
+
 describe 'Adjustments to Backbone.Model', ->
 
   describe 'default validate method', ->
